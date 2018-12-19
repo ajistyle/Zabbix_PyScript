@@ -1,0 +1,43 @@
+---
+  - name: Install Software
+    yum: name={{ item }} state=latest
+    with_items:
+      - libcurl-devel
+  
+  - name: Create Zabbix User
+    user: name={{ zabbix_user }} 
+          state=present 
+          createhome=no 
+          shell=/sbin/nologin
+  
+  - name: Copy Zabbix.tar.gz
+    copy: src=zabbix_agent_{{ zabbix_version }}.tar.gz 
+          dest={{ zabbix_dir }}/src/zabbix_agent_{{ zabbix_version }}.tar.gz 
+          owner=root 
+          group=root
+  
+  - name: Uncompression Zabbix.tar.gz
+    shell: tar zxf {{ zabbix_dir }}/src/zabbix_agent_{{ zabbix_version }}.tar.gz -C {{ zabbix_dir }}/
+ 
+  - name: Copy Zabbix Start Script
+    template: src=zabbix_agentd dest=/etc/init.d/zabbix_agentd 
+              owner=root 
+              group=root 
+              mode=0755
+  
+  - name: Copy Zabbix Config File
+    template: src=zabbix_agentd.conf 
+              dest={{ zabbix_dir }}/zabbix_agent-{{ zabbix_version }}-{{OS_Version7}}-{{OS_Hardware64}}/conf/zabbix_agentd.conf 
+              owner={{ zabbix_user }} 
+              group={{ zabbix_user }} 
+              mode=0644
+  
+  - name: Modify Zabbix Dir Permisson
+    file: path={{ zabbix_dir }}/zabbix 
+          owner={{ zabbix_user }} 
+          group={{ zabbix_user }} 
+          mode=0755 
+          recurse=yes
+  
+  - name: Start Zabbix Service
+    shell: /etc/init.d/zabbix_agentd start

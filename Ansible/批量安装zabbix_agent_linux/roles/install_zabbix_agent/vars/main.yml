@@ -1,0 +1,8 @@
+zabbix_dir: /usr/local
+zabbix_version: 4.0.0
+zabbix_user: zabbix
+zabbix_port: 10050
+zabbix_server_ip: 10.21.11.125
+
+OS_Version7: centos7
+OS_Hardware64: amd64
