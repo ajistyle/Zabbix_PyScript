@@ -1,0 +1,3 @@
+- hosts: Node2
+  roles:
+  - uninstall_zabbix_agent_win

@@ -1,0 +1,6 @@
+---
+- name: Stop zabbix_agent on windows
+  win_shell: C:\zabbix\bin\win64\zabbix_agentd.exe -c C:\zabbix\zabbix_agentd.win.conf -x
+
+- name: Uninstall zabbix_agent on windows
+  win_shell: C:\zabbix\bin\win64\zabbix_agentd.exe -c C:\zabbix\zabbix_agentd.win.conf -d

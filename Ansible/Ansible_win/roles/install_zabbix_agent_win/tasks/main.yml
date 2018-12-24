@@ -1,0 +1,57 @@
+---
+- name: Copy zabbix_agents_3.4.6.win.zip
+  win_copy: src=zabbix_agents_3.4.6.win.zip
+        dest=C:\zabbix_agents_3.4.6.win.zip
+
+- name: Unzip zabbix_agents_3.4.6.win.zip
+  win_unzip:
+    src: "C:\\zabbix_agents_3.4.6.win.zip"
+    dest: "C:\\zabbix"
+    creates: yes
+    delete_archive: yes
+
+- name: Create Log folder
+  win_file:
+      dest: "C:\\zabbix\\log"
+      state: directory
+
+- name: Configuration zabbix_agent log path
+  win_lineinfile:
+     path: C:\\zabbix\\zabbix_agentd.win.conf
+     encoding: ansi
+     create: yes
+     line: LogFile=C:\zabbix\log\zabbix_agent.log
+
+- name: Configuration parameter Timeout
+  win_lineinfile:
+     path: C:\\zabbix\\zabbix_agentd.win.conf
+     encoding: ansi
+     create: yes
+     line: Timeout=3
+
+- name: Configuration parameter Server IP
+  win_lineinfile:
+     path: C:\\zabbix\\zabbix_agentd.win.conf
+     encoding: ansi
+     create: yes
+     line: Server=10.21.11.125
+
+- name: Configuration parameter ListenIP
+  win_lineinfile:
+     path: C:\\zabbix\\zabbix_agentd.win.conf
+     encoding: ansi
+     create: yes
+     line: ListenIP={{ansible_ip_addresses[0]}}
+
+- name: Configuration parameter Hostname
+  win_lineinfile:
+     path: C:\\zabbix\\zabbix_agentd.win.conf
+     encoding: ansi
+     create: yes
+     line: Hostname={{ansible_ip_addresses[0]}}
+
+- name: Install Zabbix_agent on Windows
+  win_shell: C:\\zabbix\\bin\\win64\\zabbix_agentd.exe -c C:\\zabbix\\zabbix_agentd.win.conf -i
+
+- name: Start Zabbix_agent on Windows
+  win_shell: C:\\zabbix\\bin\\win64\\zabbix_agentd.exe -c C:\\zabbix\\zabbix_agentd.win.conf -s

@@ -1,0 +1,5 @@
+
+---
+- hosts: Node2
+  roles:
+  - install_zabbix_agent_win

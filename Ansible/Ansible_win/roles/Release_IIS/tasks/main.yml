@@ -1,0 +1,39 @@
+---
+- name: create directory
+  win_file:
+     dest: "D:\\release"
+     state: directory
+
+- name: Copy Release Package 
+  win_copy:
+     src: "{{ Release_Package_Name }}"
+     dest: "D:\\release\\{{ Release_Package_Name }}"
+
+- name: Stop  win_iis_webapppool
+  win_iis_webapppool:
+    name: "{{ Webapppool_Name }}"
+    state: stopped
+
+- name: Delete Cache folder
+  win_file:
+    dest: "C:\\Windows\\Microsoft.NET\\Framework\\v4.0.30319\\Temporary ASP.NET Files\\{{ WebApplication_Name }}"
+    state: absent
+
+- name: Delete Cache folder64
+  win_file:
+    dest: "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\Temporary ASP.NET Files\\{{ WebApplication_Name }}"
+    state: absent
+
+- name: Unzip Release Package
+  win_unzip:
+    src: "D:\\release\\{{ Release_Package_Name }}"
+    dest: "D:\\{{ WebApplication_Name }}"
+    creates: yes
+    delete_archive: no
+
+- name: Start  win_iis_webapppool
+  win_iis_webapppool:
+    name: "{{ Webapppool_Name }}"
+    state: started
+
+
